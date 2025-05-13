@@ -1,0 +1,56 @@
+{
+    "questions": [
+        {
+            "text": "What's the most common consultant-delivered artefact (e.g. a spec, report, or training doc) that ends up actively misleading the client?",
+            "author": "Tine"
+        },
+        {
+            "text": "When do you know a consultant (with consulting background) has never worked in a real business before?",
+            "author": "Tine"
+        },
+        {
+            "text": "What's the worst advice you've seen given by a consultant that the client actually followed?",
+            "author": "Tine"
+        },
+        {
+            "text": "What's the most stupid thing you've seen a consultant doing that had (no) consequences?",
+            "author": "Tine"
+        },
+        {
+            "text": "What's a moment where a consultant totally overengineered a solution to impress themselves?",
+            "author": "Tine"
+        },
+        {
+            "text": "Have you seen consultants misunderstanding the client's business model?",
+            "author": "Tine"
+        },
+        {
+            "text": "Have you ever seen a consultant overstepping their role? If so, how?",
+            "author": "Tine"
+        },
+        {
+            "text": "How have you seen clients derail their own projects?",
+            "author": "Tine"
+        },
+        {
+            "text": "What do you do if a client keeps asking for customizations and changes during UAT testing and training?",
+            "author": "Tine"
+        },
+        {
+            "text": "Which one is most expensive to implement and run, BC or F&O?",
+            "author": "Tine"
+        },
+        {
+            "text": "Is it easier to fake competence in F&O or BC?",
+            "author": "Tine"
+        },
+        {
+            "text": "Which platform encourages more DIY disasters by consultants?",
+            "author": "Tine"
+        },
+        {
+            "text": "Who makes the worse assumptions about standard fit: F&O or BC consultants?",
+            "author": "Tine"
+        }
+    ]
+} 

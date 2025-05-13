@@ -1,0 +1,37 @@
+[
+  {
+    "name": "Tanya Henderson",
+    "team": "bc",
+    "position": "Sorceress",
+    "company": "TESS Team",
+    "image": "images/Tanya.png"
+  },
+  {
+    "name": "Shannon Mullins",
+    "team": "bc",
+    "position": "Fun Times Sorceress",
+    "company": "A BC Consulting Group",
+    "image": "images/Shannon.png"
+  },
+  {
+    "name": "Marco Romano",
+    "team": "fo",
+    "position": "Wizard",
+    "company": "IT|Fandango",
+    "image": "images/Marco.png"
+  },
+  {
+    "name": "Luca Pellegrini",
+    "team": "fo",
+    "position": "Sorcerer",
+    "company": "MCB Advisors",
+    "image": "images/Luca.png"
+  },
+  {
+    "name": "Tine Staric",
+    "team": "moderator",
+    "position": "Master of Promptical Arts",
+    "company": "Companial",
+    "image": "images/Tine.jpg"
+  }
+] 
