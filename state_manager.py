@@ -67,4 +67,8 @@ class StateManager:
 
     def toggle_scores_blur(self) -> bool:
         """Toggle the blur state of scores and return the new state."""
-        return self.db.toggle_scores_blur() 
+        return self.db.toggle_scores_blur()
+
+    def set_question_winner(self, question_id: int, team: str) -> None:
+        """Set the winner for a question and update team scores."""
+        self.db.set_question_winner(question_id, team) 

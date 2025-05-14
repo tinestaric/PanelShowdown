@@ -26,7 +26,8 @@ class Database:
                     author TEXT NOT NULL,
                     timestamp TEXT NOT NULL,
                     is_active BOOLEAN DEFAULT 0,
-                    is_past BOOLEAN DEFAULT 0
+                    is_past BOOLEAN DEFAULT 0,
+                    winner TEXT CHECK(winner IN ('bc', 'fo', NULL))
                 )
             """)
             
@@ -140,6 +141,14 @@ class Database:
         with self._get_connection() as conn:
             cursor = conn.cursor()
             
+            # Check if question is locked (has a winner)
+            cursor.execute("""
+                SELECT winner FROM questions WHERE id = ?
+            """, (question_id,))
+            result = cursor.fetchone()
+            if result and result["winner"] is not None:
+                return False  # Question is locked
+            
             # Check if attendee already voted for this question
             cursor.execute("""
                 SELECT 1 FROM individual_votes 
@@ -162,13 +171,6 @@ class Database:
                 SET count = count + 1
                 WHERE question_id = ? AND team = ?
             """, (question_id, team))
-            
-            # Update team score
-            cursor.execute("""
-                UPDATE team_scores 
-                SET score = score + 1
-                WHERE team = ?
-            """, (team,))
             
             conn.commit()
             return True
@@ -243,10 +245,11 @@ class Database:
             
             # Get active question
             cursor.execute("""
-                SELECT id FROM questions WHERE is_active = 1
+                SELECT id, winner FROM questions WHERE is_active = 1
             """)
             active_question = cursor.fetchone()
             active_question_id = active_question["id"] if active_question else None
+            active_question_winner = active_question["winner"] if active_question else None
             
             # Get all questions with their votes
             cursor.execute("""
@@ -269,7 +272,8 @@ class Database:
                         "bc": row["bc_votes"],
                         "fo": row["fo_votes"]
                     },
-                    "timestamp": row["timestamp"]
+                    "timestamp": row["timestamp"],
+                    "winner": row["winner"]
                 })
             
             # Get past questions
@@ -293,7 +297,8 @@ class Database:
                         "bc": row["bc_votes"],
                         "fo": row["fo_votes"]
                     },
-                    "timestamp": row["timestamp"]
+                    "timestamp": row["timestamp"],
+                    "winner": row["winner"]
                 })
             
             # Get team scores
@@ -426,4 +431,45 @@ class Database:
             """, ("true" if new_state else "false",))
             
             conn.commit()
-            return new_state 
+            return new_state
+
+    def set_question_winner(self, question_id: int, team: str) -> None:
+        """Set the winner for a question and update team scores, handling re-awards."""
+        if team not in ["bc", "fo"]:
+            raise ValueError("Team must be 'bc' or 'fo'")
+
+        with self._get_connection() as conn:
+            cursor = conn.cursor()
+
+            # Get the current winner
+            cursor.execute("SELECT winner FROM questions WHERE id = ?", (question_id,))
+            result = cursor.fetchone()
+            prev_winner = result["winner"] if result else None
+
+            if prev_winner == team:
+                # No change, do nothing
+                return
+
+            # Update the winner
+            cursor.execute("""
+                UPDATE questions 
+                SET winner = ?
+                WHERE id = ?
+            """, (team, question_id))
+
+            # Subtract a point from the previous winner, if any
+            if prev_winner in ["bc", "fo"]:
+                cursor.execute("""
+                    UPDATE team_scores 
+                    SET score = score - 1
+                    WHERE team = ? AND score > 0
+                """, (prev_winner,))
+
+            # Add a point to the new winner
+            cursor.execute("""
+                UPDATE team_scores 
+                SET score = score + 1
+                WHERE team = ?
+            """, (team,))
+
+            conn.commit() 

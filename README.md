@@ -1,15 +1,40 @@
 # Panel Showdown
 
-A lightweight Streamlit app for running live panel "battle" sessions between Business Central and Finance & Operations consultants. The app provides three different views for audience members, moderators, and display purposes.
+A lightweight Streamlit app for running live panel "battle" sessions between Business Central and Finance & Operations consultants. The app provides three different views for audience members, moderators, and display purposes, with real-time updates and a modern, responsive interface.
 
 ## Features
 
-- **Audience View**: Submit questions and vote on panelists
-- **Moderator View**: Control active questions, manage the queue, and reset votes
-- **Display View**: Show current question and team scores on the big screen
+- **Audience View**
+  - Submit questions with author attribution
+  - Vote for Business Central or Finance & Operations teams
+  - View current and past questions with voting status
+  - Real-time updates of questions and votes
+  - QR code for easy access to the audience view
+
+- **Moderator View**
+  - Control active questions and manage the question queue
+  - Award points to teams for winning questions
+  - Reset votes and questions when needed
+  - Load initial questions from a JSON file
+  - Toggle score visibility (blur/unblur)
+  - Monitor session progress and team scores
+
+- **Display View**
+  - Show current active question with voting progress
+  - Display team scores with optional blur effect
+  - Show panelist information
+  - Auto-refresh to stay current
+  - Clean, distraction-free interface for projector display
+  - Past questions history
+
+## Technical Details
+
+- Built with Streamlit for a modern, responsive web interface
+- SQLite database for reliable state management
 - Real-time updates across all views
-- Simple JSON-based state management
-- Clean, modern UI with responsive design
+- Secure access control for moderator and display views
+- Custom styling for optimal viewing experience
+- QR code generation for easy audience access
 
 ## Setup
 
@@ -32,32 +57,49 @@ A lightweight Streamlit app for running live panel "battle" sessions between Bus
 ## Usage
 
 1. Open the app in your browser (default: http://localhost:8501)
-2. Use the sidebar to switch between views:
-   - **Audience**: Submit questions and vote
-   - **Moderator**: Manage questions and control the session
-   - **Display**: Show on the big screen
+2. Access different views using URL parameters:
+   - Audience view: `http://localhost:8501/?view=audience`
+   - Moderator view: `http://localhost:8501/?view=moderator&access=moderator`
+   - Display view: `http://localhost:8501/?view=display&access=display`
 
 ### Audience View
 - Submit questions using the form at the top
 - Vote for questions using the BC/FO buttons
 - See all submitted questions and their current votes
+- Track your voting history
+- Scan QR code to join the session
 
 ### Moderator View
-- Set the active question
-- Remove inappropriate questions
-- Reset votes when needed
-- Monitor the session progress
+- Set and manage active questions
+- Award points to teams
+- Reset votes or questions when needed
+- Load initial questions from JSON
+- Toggle score visibility
+- Monitor team progress
 
 ### Display View
-- Shows current team scores
-- Displays the active question
+- Shows current team scores (with optional blur)
+- Displays the active question with voting progress
+- Shows panelist information
 - Auto-refreshes to stay current
-- Perfect for displaying on a projector or large screen
+- Clean interface optimized for projector display
 
-## State Management
+## Database
 
-The app uses a simple JSON file (`panel_state.json`) to maintain state across all views. This file is automatically created when the app starts and is updated in real-time as users interact with the app.
+The app uses SQLite for state management with the following features:
+- Persistent storage of questions, votes, and team scores
+- Individual vote tracking to prevent duplicate votes
+- Automatic state synchronization across all views
+- Backup and restore capabilities
 
 ## Contributing
 
-Feel free to submit issues and enhancement requests!
+Feel free to submit issues and enhancement requests! When contributing, please ensure you:
+1. Follow the existing code style
+2. Add appropriate tests for new features
+3. Update the documentation as needed
+4. Use meaningful commit messages
+
+## License
+
+This project is open source and available under the MIT License.

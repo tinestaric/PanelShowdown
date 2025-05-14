@@ -15,6 +15,15 @@ def render_question_card(question, is_active=False, is_past=False, has_voted=Fal
     if is_past:
         card_class += " past-question"
     
+    if question.get("winner") == "bc":
+        team_color = "#0066cc"
+    elif question.get("winner") == "fo":
+        team_color = "#cc0000"
+    else:
+        team_color = "#888888"  # Gray color for no winner or other cases
+    
+    winner = question.get('winner', '').upper() if question.get('winner') else "none"
+    
     st.markdown(f"""
         <div class="{card_class}">
             <div class="question-text"><strong>Q:</strong> {question['text']}</div>
@@ -22,8 +31,12 @@ def render_question_card(question, is_active=False, is_past=False, has_voted=Fal
                 By: {question['author']} at {format_timestamp(question['timestamp'])}<br>
                 Votes: BC ({question['votes']['bc']}) | FO ({question['votes']['fo']})
             </div>
+            <div class="winner-info" style="color:{team_color}">
+                <strong>Point awarded to {winner}</strong>
+            </div>
         </div>
     """, unsafe_allow_html=True)
+
 
     if has_voted:
         team_color = "#0066cc" if voted_team == "bc" else "#cc0000"
@@ -73,7 +86,8 @@ def show_audience_view(state_manager: StateManager):
             has_voted, voted_team = state_manager.has_voted(active_q["id"], attendee_id)
             render_question_card(active_q, True, has_voted=has_voted, voted_team=voted_team)
             
-            if not has_voted:
+            # Only show voting buttons if question is not locked and user hasn't voted
+            if not active_q.get("winner") and not has_voted:
                 col1, col2 = st.columns(2)
                 with col1:
                     if st.button("Vote Business Central", key="vote_bc_active"):
@@ -89,8 +103,10 @@ def show_audience_view(state_manager: StateManager):
                         else:
                             st.error("You have already voted for this question!")
                         st.rerun()
-            else:
+            elif has_voted:
                 st.info(f"You have already voted for {voted_team.upper()}")
+            elif active_q.get("winner"):
+                st.info(f"Voting is closed. Point awarded to {active_q['winner'].upper()}")
     else:
         st.info("Waiting for the moderator to select a question...")
 
@@ -101,7 +117,8 @@ def show_audience_view(state_manager: StateManager):
             has_voted, voted_team = state_manager.has_voted(past_q["id"], attendee_id)
             render_question_card(past_q, is_past=True, has_voted=has_voted, voted_team=voted_team)
             
-            if not has_voted:
+            # Only show voting buttons if question is not locked and user hasn't voted
+            if not past_q.get("winner") and not has_voted:
                 col1, col2 = st.columns(2)
                 with col1:
                     if st.button("Vote BC", key=f"vote_bc_past_{past_q['id']}"):
@@ -117,6 +134,10 @@ def show_audience_view(state_manager: StateManager):
                         else:
                             st.error("You have already voted for this question!")
                         st.rerun()
+            elif has_voted:
+                st.info(f"You have already voted for {voted_team.upper()}")
+            elif past_q.get("winner"):
+                st.info(f"Voting is closed. Point awarded to {past_q['winner'].upper()}")
             st.markdown("---")  # Add a separator between past questions
 
 def run_auto_refreshing_audience_view(state_manager: StateManager, interval_seconds: int = 2):
